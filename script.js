@@ -1,9 +1,46 @@
-const addBtn = document.querySelector('#add')
-const subtractBtn = document.querySelector('#subtract')
-const multiplyBtn = document.querySelector('#multiply')
-const divideBtn = document.querySelector('#divide')
-const clearBtn = document.querySelector('#clear')
-const equalsBtn = document.querySelector('#equals')
+let prevValue = "";
+let currentValue = "";
+let operator = "";
+
+document.addEventListener("DOMContentLoaded", function(){
+    let numbers = document.querySelectorAll('.numButton')
+    let decimal = document.querySelector('.dotButton')
+    let operators = document.querySelectorAll('.operation')
+
+    let previousDisplay = document.querySelector('.previous')
+    let currentDisplay = document.querySelector('.current')
+
+    numbers.forEach((number) => number.addEventListener("click", function(n){
+        handleNumber(n.target.textContent)
+        currentDisplay.textContent = currentValue;
+    }))
+
+    operators.forEach((op) => op.addEventListener("click", function(o){
+        handleOperator(o.target.textContent)
+        previousDisplay.textContent = prevValue + " " + operator;
+        currentDisplay.textContent = currentValue; 
+    }))
+
+    clear.addEventListener("click",function(){
+        prevValue = " ";
+        currentValue = " ";
+        operator = " ";
+        previousDisplay.textContent = currentValue;
+        currentDisplay.textContent = currentValue;
+    })
+
+    equals.addEventListener("click", function(){
+        prevValue = Number(prevValue);
+        currentValue = Number(currentValue);
+        operate(operator,prevValue,currentValue)
+        previousDisplay.textContent = ' ';
+        currentDisplay.textContent = prevValue;
+    })
+
+    decimal.addEventListener("click", function(){
+        addDecimal();
+    })
+})
 
 function add(a, b) {
     return a + b
@@ -22,48 +59,33 @@ function divide(a, b) {
 }
 
 function operate(operator,a,b) {
-    switch (operator) {
-        case '+':
-          return add(a, b)
-        case '-':
-          return substract(a, b)
-        case 'x':
-          return multiply(a, b)
-        case '÷':
-          if (b === 0) return null
-          else return divide(a, b)
-        default:
-          return null
+    if (operator == "/" && b == 0) {
+        prevValue = "cant divide by 0"
+    } else {
+        if (operator=="+") {
+            prevValue = add(a,b);
+        } else if (operator =="-"){
+            prevValue = substract(a,b)
+        } else if (operator =="x"){
+            prevValue = multiply(a,b)
+        } else {
+            prevValue = divide(a,b)
+        }
+        prevValue = prevValue.toString();
+        currentValue = prevValue.toString();
     }
 }
 
-function add2Screen() {
-
+function handleNumber(num) {
+    currentValue += num;
 }
-
-function clear() {
-
+function handleOperator(op) {
+    operator = op;
+    prevValue =  currentValue;
+    currentValue = ' ';
 }
-
-function equals() {
-
+function addDecimal() {
+    if (!currentValue.includes(".")) {
+        currentValue += '.';
+    }
 }
-
-addBtn.addEventListener('click', () => {
-    add()
-})
-subtractBtn.addEventListener('click', () => {
-    subtract()
-})
-multiplyBtn.addEventListener('click', () => {
-    multiply()
-})
-divideBtn.addEventListener('click', () => {
-    divide()
-})
-clearBtn.addEventListener('click', () => {
-    clear()
-})
-equalsBtn.addEventListener('click', () => {
-    equals()
-})
